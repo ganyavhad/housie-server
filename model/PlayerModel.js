@@ -5,6 +5,9 @@ const schema = new mongoose.Schema({
         type: String,
         required: true
     },
+    id: {
+        type: Number
+    },
     profilePic: {
         type: String
     },

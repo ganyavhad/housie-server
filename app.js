@@ -40,9 +40,9 @@ const playerController = require('./controller/PlayerController')
 const roomController = require('./controller/RoomController')
 const ticketController = require('./controller/TicketController')
 
-app.use('player', playerController)
-app.use('room', roomController)
-app.use('ticket', ticketController)
+app.use('/player', playerController)
+app.use('/room', roomController)
+app.use('/ticket', ticketController)
 
 app.get("/getTicket", (req, res) => {
   const ticket = require("./ticket")();
