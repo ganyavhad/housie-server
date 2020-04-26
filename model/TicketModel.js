@@ -32,18 +32,11 @@ const schema = new mongoose.Schema({
             }
         }]
     },
-    balance: {
-        type: Number,
-        default: 500
-    },
-    type: {
-        type: String,
-        enum: ['Guest', 'Member']
-    },
     status: {
         type: String,
-        enum: ['Open', 'Closed', 'Suspend']
+        enum: ['Open', 'Closed', 'Suspend'],
+        default: 'Open'
     },
     winningGames: []
 });
-module.exports = mongoose.model("Player", schema);
+module.exports = mongoose.model("Ticket", schema);

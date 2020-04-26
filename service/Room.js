@@ -1,5 +1,5 @@
 const Room = require('../model/RoomModel');
-
+const TicketService = require('../service/Ticket')
 module.exports = {
     createRoom: async function (data) {
         try {
@@ -7,7 +7,6 @@ module.exports = {
             let roomObj = {}
             roomObj.creator = data._id;
             roomObj.roomId = roomId;
-            roomObj.startTime = new Date();
             roomObj.maxPlayer = data.maxPlayer;
             roomObj.players = [data._id];
             let room = new Room(roomObj);
@@ -42,7 +41,6 @@ module.exports = {
                     players: data._id
                 }
             })
-            console.log("updatedData", updatedData)
             if (updatedData.nModified && updatedData.nModified >= 1) {
                 roomData.players.push(data._id)
                 return {
@@ -55,6 +53,49 @@ module.exports = {
                 status: false
             }
         } catch (error) {
+            throw error
+        }
+    },
+    startGame: async function (data) {
+        try {
+            let roomData = await Room.findOne({
+                creator: data._id,
+                roomId: data.roomId,
+                status: 'Active',
+                gameStatus: 'BeforeStart'
+            })
+            if (!roomData) {
+                return {
+                    data: "Room Not Found",
+                    value: false
+                }
+            }
+            await Room.updateOne({
+                _id: roomData._id
+            }, {
+                $set: {
+                    startTime: new Date(),
+                    gameStatus: "Start"
+                }
+            })
+
+            let isTicketGenerated = await TicketService.addTickets({
+                roomId: roomData._id,
+                players: roomData.players
+            })
+            console.log("isTicketGenerated", isTicketGenerated)
+            if (isTicketGenerated) {
+                return {
+                    data: "Game Start",
+                    value: true
+                }
+            }
+            return {
+                data: "Failed to start game",
+                value: false
+            }
+        } catch (error) {
+            console.log("error", error)
             throw error
         }
     }

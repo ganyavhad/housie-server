@@ -28,5 +28,17 @@ Router.post('/joinRoom', async (req, res) => {
         res.status(500).send(error)
     }
 })
+Router.post('/startGame', async (req, res) => {
+    try {
+        let roomData = await Room.startGame(req.body);
+        if (roomData.status) {
+            res.status(200).send(roomData.data)
+        } else {
+            res.status(404).send(roomData.data)
+        }
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
 
 module.exports = Router
