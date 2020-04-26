@@ -5,6 +5,10 @@ const schema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Player'
     },
+    room: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Room'
+    },
     ticket: {
         firstLine: [{
             number: Number,

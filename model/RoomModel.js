@@ -38,6 +38,22 @@ const schema = new mongoose.Schema({
     ref: 'Player'
   }],
   points: Number,
-  maxPlayer: Number
+  maxPlayer: Number,
+  status: {
+    type: String,
+    enum: ["Active", "Closed"],
+    default: "Active"
+  },
+  gameStatus: {
+    type: String,
+    enum: ["BeforeStart", "Start", "ResultDeclared"],
+    default: "BeforeStart"
+  },
+  startTime: {
+    type: Date
+  },
+  endTime: {
+    type: Date
+  }
 });
 module.exports = mongoose.model("Room", schema);
