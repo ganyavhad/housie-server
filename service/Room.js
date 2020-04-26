@@ -83,7 +83,6 @@ module.exports = {
                 roomId: roomData._id,
                 players: roomData.players
             })
-            console.log("isTicketGenerated", isTicketGenerated)
             if (isTicketGenerated) {
                 return {
                     data: "Game Start",
