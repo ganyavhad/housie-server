@@ -1,5 +1,6 @@
 const Room = require('../model/RoomModel');
 const TicketService = require('../service/Ticket')
+const IntervalService = require('../service/Interval')
 module.exports = {
     createRoom: async function (data) {
         try {
@@ -84,6 +85,7 @@ module.exports = {
                 players: roomData.players
             })
             if (isTicketGenerated) {
+                IntervalService.set(roomData.roomId)
                 return {
                     data: "Game Start",
                     value: true
@@ -97,5 +99,16 @@ module.exports = {
             console.log("error", error)
             throw error
         }
+    },
+    addDraw: async function (data) {
+        return await Room.updateOne({
+            roomId: data.roomId,
+            status: "Active",
+            gameStatus: "Start"
+        }, {
+            $push: {
+                draw: data.number
+            }
+        })
     }
 }

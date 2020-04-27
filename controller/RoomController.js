@@ -1,5 +1,6 @@
 const Router = require('express').Router()
 const Room = require('../service/Room')
+
 Router.get('/', (req, res) => {
     res.send('Test')
 })
@@ -31,7 +32,7 @@ Router.post('/joinRoom', async (req, res) => {
 Router.post('/startGame', async (req, res) => {
     try {
         let roomData = await Room.startGame(req.body);
-        if (roomData.status) {
+        if (roomData.value) {
             res.status(200).send(roomData.data)
         } else {
             res.status(404).send(roomData.data)

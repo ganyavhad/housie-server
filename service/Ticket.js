@@ -15,6 +15,7 @@ module.exports = {
                 }
                 let ticket = new Ticket(ticketObj);
                 await ticket.save()
+                io.emit(`ticket_${data.roomId}`, {});
             });
             return true
         } catch (error) {
