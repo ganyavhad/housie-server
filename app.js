@@ -25,7 +25,7 @@ app.use(function (req, res, next) {
 
 // database connection
 mongoose
-  .connect("mongodb://localhost:27017/Assignment", {
+  .connect("mongodb://localhost:27017/Housie", {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
