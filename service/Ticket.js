@@ -6,13 +6,14 @@ module.exports = {
             data.players.forEach(async player => {
                 let ticketObj = {}
                 ticketObj.player = player
-                ticketObj.room = data.roomId
+                ticketObj.room = data.room
                 let ticketData = await this.generateTickets()
                 ticketObj.ticket = {
                     firstLine: ticketData[0],
                     secondLine: ticketData[1],
                     thirdLine: ticketData[2]
                 }
+                ticketObj.roomId = data.roomId
                 let ticket = new Ticket(ticketObj);
                 await ticket.save()
                 io.emit(`ticket_${data.roomId}`, {});
@@ -83,5 +84,16 @@ module.exports = {
         } catch (error) {
             throw error;
         }
+    },
+    getTicket: async function (data) {
+        try {
+            return await Ticket.findOne({
+                roomId: data.roomId,
+                player: data.userId
+            })
+        } catch (error) {
+            throw error
+        }
+
     }
 }

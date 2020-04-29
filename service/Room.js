@@ -91,8 +91,9 @@ module.exports = {
             })
 
             let isTicketGenerated = await TicketService.addTickets({
-                roomId: roomData._id,
-                players: roomData.players
+                room: roomData._id,
+                players: roomData.players,
+                roomId: roomData.roomId
             })
             if (isTicketGenerated) {
                 io.emit(`game_start_${roomData.roomId}`, {})
@@ -121,5 +122,18 @@ module.exports = {
                 draw: data.number
             }
         })
+    },
+    getRoom: async function (data) {
+        try {
+            return await Room.findOne({
+                roomId: data.roomId,
+                status: 'Active',
+                gameStatus: "Start"
+            }, {
+                players: 0
+            })
+        } catch (error) {
+            throw error
+        }
     }
 }

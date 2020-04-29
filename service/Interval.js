@@ -31,7 +31,7 @@ module.exports = {
                 } else {
                     this.clear(interval[id])
                 }
-            }, 3 * 1000)
+            }, 10 * 1000)
         } catch (error) {
             throw error;
         }

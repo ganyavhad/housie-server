@@ -46,4 +46,21 @@ Router.post('/startGame', async (req, res) => {
     }
 })
 
+Router.get('/getRoom/:id', async (req, res, next) => {
+    try {
+        let room = await Room.getRoom({
+            roomId: req.params.id
+        })
+        if (room) {
+            res.status(200).send(room)
+        } else {
+            res.status(404).send({
+                message: "Room not found"
+            })
+        }
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
+
 module.exports = Router
