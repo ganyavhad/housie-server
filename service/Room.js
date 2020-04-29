@@ -1,5 +1,6 @@
 const Room = require('../model/RoomModel');
 const TicketService = require('../service/Ticket')
+const Player = require('../model/PlayerModel')
 const IntervalService = require('../service/Interval')
 module.exports = {
     createRoom: async function (data) {
@@ -18,6 +19,13 @@ module.exports = {
     },
     joinRoom: async function (data) {
         try {
+            let player = await Player.findOne({
+                _id: data._id
+            }, {
+                name: 1,
+                balance: 1
+            })
+            console.log(player)
             let roomData = await Room.findOne({
                 roomId: data.roomId,
                 status: 'Active'
@@ -44,6 +52,7 @@ module.exports = {
             })
             if (updatedData.nModified && updatedData.nModified >= 1) {
                 roomData.players.push(data._id)
+                io.emit(`table_join_${roomData.roomId}`, player)
                 return {
                     data: roomData,
                     status: true
@@ -54,6 +63,7 @@ module.exports = {
                 status: false
             }
         } catch (error) {
+            console.log(error)
             throw error
         }
     },
@@ -85,6 +95,7 @@ module.exports = {
                 players: roomData.players
             })
             if (isTicketGenerated) {
+                io.emit(`game_start_${roomData.roomId}`, {})
                 IntervalService.set(roomData.roomId)
                 return {
                     data: "Game Start",

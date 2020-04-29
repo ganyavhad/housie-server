@@ -33,9 +33,13 @@ Router.post('/startGame', async (req, res) => {
     try {
         let roomData = await Room.startGame(req.body);
         if (roomData.value) {
-            res.status(200).send(roomData.data)
+            res.status(200).send({
+                message: roomData.data
+            })
         } else {
-            res.status(404).send(roomData.data)
+            res.status(404).send({
+                message: roomData.data
+            })
         }
     } catch (error) {
         res.status(500).send(error)
