@@ -122,5 +122,66 @@ module.exports = {
         } catch (error) {
             throw error
         }
+    },
+    fullHousie: async function (data) {
+        let RoomService = require('../service/Room')
+        try {
+            let ticketData = await Ticket.findOne({
+                _id: data._id
+            })
+            if (!ticketData) {
+                return {
+                    message: 'Ticket Not Found',
+                    value: false
+                }
+            }
+            if (ticketData.status == 'Closed') {
+                return {
+                    message: 'Ticket Expired',
+                    value: true
+                }
+            }
+            let firstLineNumbers = []
+            let secondLineNumbers
+            let thridLineNumbers
+            firstLineNumbers = _.map(ticketData.ticket.firstLine, fl => {
+                return fl.number
+            })
+            secondLineNumbers = _.map(ticketData.ticket.secondLine, fl => {
+                return fl.number
+            })
+            thridLineNumbers = _.map(ticketData.ticket.thridLine, fl => {
+                return fl.number
+            })
+            let drawNumber = firstLineNumbers.concat(secondLineNumbers, thridLineNumbers)
+            _.remove(drawNumber, num => {
+                return num === 0
+            })
+            let gameStatus = await RoomService.verifyStatus(ticketData.player, data.roomId, 'fullHousie', drawNumber)
+            if (gameStatus) {
+                await Ticket.updateOne({
+                    _id: data._id
+                }, {
+                    $set: {
+                        status: "Closed"
+                    },
+                    $push: {
+                        winningGames: 'fullHousie'
+                    }
+                })
+                return {
+                    message: "Win",
+                    value: true
+                }
+            } else {
+                return {
+                    message: "Claim rejected",
+                    value: true
+                }
+            }
+
+        } catch (error) {
+            throw error
+        }
     }
 }

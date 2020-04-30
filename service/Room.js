@@ -135,5 +135,41 @@ module.exports = {
         } catch (error) {
             throw error
         }
+    },
+    verifyStatus: async function (player, roomId, type, drawNumber) {
+        try {
+            let roomData = await Room.findOne({
+                _id: roomId,
+                status: 'Active',
+                gameStatus: "Start"
+            })
+            let status = true
+            console.log(roomData.draw, drawNumber)
+            drawNumber.forEach(num => {
+                if (roomData.draw.indexOf(num) === -1) {
+                    console.log("111111111=>", num)
+                    status = false
+                    return
+                }
+            })
+            if (status) {
+                await Room.updateOne({
+                    _id: roomId,
+                    status: 'Active',
+                    gameStatus: "Start"
+                }, {
+                    $set: {
+                        gameStatus: "ResultDeclared",
+                        status: "Closed",
+                    },
+                    $push: {
+                        fullHousie: player
+                    }
+                })
+                return status
+            }
+        } catch (error) {
+            throw error
+        }
     }
 }
