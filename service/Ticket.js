@@ -95,5 +95,32 @@ module.exports = {
             throw error
         }
 
+    },
+    selectNumber: async function (data) {
+        try {
+            let filterObj = {}
+            filterObj._id = data._id
+            filterObj[`ticket.${data.line}.number`] = data.number
+            updateObj = {}
+            updateObj[`ticket.${data.line}.$.status`] = 'Selected'
+            console.log(updateObj)
+            let updatedData = await Ticket.updateOne(filterObj, {
+                $set: updateObj
+            })
+            console.log(updatedData)
+            if (updatedData.nModified >= 1) {
+                return {
+                    message: "Number Selected",
+                    value: true
+                }
+            } else {
+                return {
+                    message: "Failed to select",
+                    value: false
+                }
+            }
+        } catch (error) {
+            throw error
+        }
     }
 }
