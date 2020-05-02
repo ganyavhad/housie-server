@@ -169,6 +169,9 @@ module.exports = {
                         winningGames: 'fullHousie'
                     }
                 })
+                io.emit(`winner_declared_${data.roomId}`, {
+                    winner: ticketData.player
+                })
                 return {
                     message: "Claim Acceped",
                     value: true,
