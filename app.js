@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-const mongoose = require("mongoose");
 const server = require("http").createServer(app);
 
 // socket functionality
@@ -23,16 +22,8 @@ app.use(function (req, res, next) {
   next();
 });
 
-// database connection
-mongoose
-  .connect("mongodb://localhost:27017/Housie", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
-  .then(() => console.log("connected to mongodb"))
-  .catch((err) => console.error("connection failed"));
-
-// const draw = require("./draw")();
+// db connection
+require('./db')()
 
 const playerController = require('./controller/PlayerController')
 const roomController = require('./controller/RoomController')
