@@ -15,5 +15,8 @@ module.exports = function () {
       useNewUrlParser: true,
       useUnifiedTopology: true
     })
-    .then(() => console.log(`Connected to ${dbName}...`));
+    .then(() => console.log(`Connected to ${dbName}...`))
+    .catch(err => {
+      console.log("Error while connecting", err)
+    });
 }
