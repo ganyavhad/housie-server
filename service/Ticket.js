@@ -102,7 +102,7 @@ module.exports = {
             filterObj._id = data._id
             filterObj[`ticket.${data.line}.number`] = data.number
             updateObj = {}
-            updateObj[`ticket.${data.line}.$.status`] = 'Selected'
+            updateObj[`ticket.${data.line}.$.status`] = data.status
             console.log(updateObj)
             let updatedData = await Ticket.updateOne(filterObj, {
                 $set: updateObj
