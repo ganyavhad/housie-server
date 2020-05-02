@@ -10,6 +10,7 @@ module.exports = function () {
     const dbUserName = config.get('dbUserName');
     let db = `mongodb+srv://${dbUserName}:${dbPassword}@cluster0-mieym.mongodb.net/${dbName}?retryWrites=true&w=majority`
   }
+  console.log("database url", db)
   mongoose.connect(db, {
       useNewUrlParser: true,
       useUnifiedTopology: true
