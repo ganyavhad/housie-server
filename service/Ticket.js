@@ -170,13 +170,13 @@ module.exports = {
                     }
                 })
                 return {
-                    message: "Win",
+                    message: "Claim Acceped",
                     value: true,
                     errorNo: 0
                 }
             } else {
                 return {
-                    message: "Claim rejected",
+                    message: "Claim Rejected",
                     value: true,
                     errorNo: 2
                 }
