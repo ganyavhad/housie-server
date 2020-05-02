@@ -2,16 +2,15 @@ const mongoose = require('mongoose');
 const config = require('config');
 
 module.exports = function () {
-  console.log("Process", process.env.NODE_ENV)
   const dbName = config.get('dbName');
-  if (process.env.NODE_ENV == 'production') {
+  const env = config.get('env');
+  let db = `mongodb://localhost:27017/${dbName}`
+  if (env == 'production') {
     const dbPassword = config.get('dbPassword');
     const dbUserName = config.get('dbUserName');
-    let db = `mongodb+srv://${dbUserName}:${dbPassword}@cluster0-mieym.mongodb.net/${dbName}?retryWrites=true&w=majority`
-  } else {
-    let db = `mongodb://localhost:27017/${dbName}`
+    db = `mongodb+srv://${dbUserName}:${dbPassword}@cluster0-mieym.mongodb.net/${dbName}?retryWrites=true&w=majority`
   }
-  console.log("database url", db)
+  console.log("database url", db, env)
   mongoose.connect(db, {
       useNewUrlParser: true,
       useUnifiedTopology: true

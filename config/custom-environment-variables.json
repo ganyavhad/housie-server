@@ -1,5 +1,6 @@
 {
   "dbUserName": "dbUserName",
   "dbPassword": "dbPassword",
-  "dbName": "dbName"
+  "dbName": "dbName",
+  "env": "env"
 }
