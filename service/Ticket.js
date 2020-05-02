@@ -103,7 +103,6 @@ module.exports = {
             filterObj[`ticket.${data.line}.number`] = data.number
             updateObj = {}
             updateObj[`ticket.${data.line}.$.status`] = data.status
-            console.log(updateObj)
             let updatedData = await Ticket.updateOne(filterObj, {
                 $set: updateObj
             })
@@ -138,7 +137,8 @@ module.exports = {
             if (ticketData.status == 'Closed') {
                 return {
                     message: 'Ticket Expired',
-                    value: true
+                    value: true,
+                    errorNo: 1
                 }
             }
             let firstLineNumbers = []
@@ -171,12 +171,14 @@ module.exports = {
                 })
                 return {
                     message: "Win",
-                    value: true
+                    value: true,
+                    errorNo: 0
                 }
             } else {
                 return {
                     message: "Claim rejected",
-                    value: true
+                    value: true,
+                    errorNo: 2
                 }
             }
 
