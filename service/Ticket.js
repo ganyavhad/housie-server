@@ -1,5 +1,6 @@
 const Ticket = require('../model/TicketModel');
-const _ = require('lodash')
+const _ = require('lodash');
+const IntervalService = require('../service/Interval')
 module.exports = {
     addTickets: async function (data) {
         try {
@@ -172,6 +173,8 @@ module.exports = {
                 io.emit(`winner_declared_${data.roomId}`, {
                     winner: ticketData.player
                 })
+                let interval = {}
+                IntervalService.clear(interval[data.roomId])
                 return {
                     message: "Claim Acceped",
                     value: true,

@@ -143,11 +143,12 @@ module.exports = {
                 status: 'Active',
                 gameStatus: "Start"
             })
+            if (!roomData) {
+                return false
+            }
             let status = true
-            console.log(roomData.draw, drawNumber)
             drawNumber.forEach(num => {
                 if (roomData.draw.indexOf(num) === -1) {
-                    console.log("111111111=>", num)
                     status = false
                     return
                 }
