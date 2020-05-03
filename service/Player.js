@@ -25,5 +25,21 @@ module.exports = {
             throw error
         }
 
-    }
+    },
+    facebookLogin: async function (data) {
+        try {
+            let member = await Player.findOne({
+                type: 'Member',
+                id: data.id
+            })
+            if (member) {
+                return member
+            }
+            data.type = 'Member'
+            let player = new Player(data)
+            return await player.save()
+        } catch (error) {
+            throw error
+        }
+    },
 }

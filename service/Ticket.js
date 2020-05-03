@@ -38,13 +38,16 @@ module.exports = {
             }
             let colArr = [];
             let start = 0;
-            let end = 10;
+            let end = 9;
             for (i = 0; i < 9; i++) {
                 let shuffleArr = _.shuffle(
                     _.shuffle(_.shuffle(_.slice(numberArr, start, end)))
                 );
                 start = start + 10;
                 end = end + 10;
+                if (i == 8) {
+                    end = end + 1
+                }
                 colArr.push(_.sortBy(shuffleArr.slice(0, 3)));
             }
 
