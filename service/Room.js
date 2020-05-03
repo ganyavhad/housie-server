@@ -43,6 +43,12 @@ module.exports = {
                     status: true
                 }
             }
+            if (roomData.players.length >= roomData.maxPlayer) {
+                return {
+                    data: "Room Full",
+                    status: false
+                }
+            }
             let updatedData = await Room.updateOne({
                 _id: roomData._id
             }, {
