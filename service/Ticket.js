@@ -173,11 +173,12 @@ module.exports = {
                         winningGames: 'fullHousie'
                     }
                 })
-                io.emit(`winner_declared_${data.roomId}`, {
+                console.log("socket called", `winner_declared_${ticketData.roomId}`)
+                io.emit(`winner_declared_${ticketData.roomId}`, {
                     winner: ticketData.player
                 })
                 let interval = {}
-                IntervalService.clear(interval[data.roomId])
+                IntervalService.clear(interval[ticketData.roomId])
                 return {
                     message: "Claim Acceped",
                     value: true,
