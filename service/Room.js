@@ -150,21 +150,31 @@ module.exports = {
                 gameStatus: "Start"
             })
             if (!roomData) {
-                return false
+                return {
+                    status: false,
+                    message: "Room Not Found"
+                }
             }
             let status = true
+            let updateObj = {}
             drawNumber.forEach(num => {
                 if (roomData.draw.indexOf(num) === -1) {
                     status = false
-                    return
+                    return {
+                        status: false,
+                        message: "Claim rejected"
+                    }
+
                 }
             })
-            if (status) {
-                await Room.updateOne({
-                    _id: roomId,
-                    status: 'Active',
-                    gameStatus: "Start"
-                }, {
+            if (type == 'fullHousie') {
+                if (roomData.fullHousie.length >= 1) {
+                    return {
+                        status: false,
+                        message: "Full housie already claimed"
+                    }
+                }
+                updateObj = {
                     $set: {
                         gameStatus: "ResultDeclared",
                         status: "Closed",
@@ -172,8 +182,72 @@ module.exports = {
                     $push: {
                         fullHousie: player
                     }
-                })
-                return status
+                }
+            }
+            if (type == 'juldiFive') {
+                if (roomData.juldiFive.length >= 1) {
+                    return {
+                        status: false,
+                        message: "Juldi Five already claimed"
+                    }
+                }
+                updateObj = {
+                    $push: {
+                        juldiFive: player
+                    }
+                }
+            }
+            if (type == 'firstLine') {
+                if (roomData.firstLine.length >= 1) {
+                    return {
+                        status: false,
+                        message: "First Line already claimed"
+                    }
+                }
+                updateObj = {
+                    $push: {
+                        firstLine: player
+                    }
+                }
+            }
+            if (type == 'secondLine') {
+                if (roomData.secondLine.length >= 1) {
+                    return {
+                        status: false,
+                        message: "Second Line already claimed"
+                    }
+                }
+                updateObj = {
+                    $push: {
+                        secondLine: player
+                    }
+                }
+            }
+
+            if (type == 'thirdLine') {
+                if (roomData.thirdLine.length >= 1) {
+                    return {
+                        status: false,
+                        message: "Third Line already claimed"
+                    }
+                }
+                updateObj = {
+                    $push: {
+                        thirdLine: player
+                    }
+                }
+            }
+
+            if (status) {
+                await Room.updateOne({
+                    _id: roomId,
+                    status: 'Active',
+                    gameStatus: "Start"
+                }, updateObj)
+                return {
+                    status: true,
+                    message: `Claim accepted for ${type}`
+                }
             }
         } catch (error) {
             throw error

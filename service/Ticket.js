@@ -146,23 +146,36 @@ module.exports = {
                 }
             }
             let firstLineNumbers = []
-            let secondLineNumbers
-            let thridLineNumbers
+            let secondLineNumbers = []
+            let thridLineNumbers = []
             firstLineNumbers = _.map(ticketData.ticket.firstLine, fl => {
-                return fl.number
+                if (fl.status == 'Selected') {
+                    return fl.number
+                }
             })
             secondLineNumbers = _.map(ticketData.ticket.secondLine, fl => {
-                return fl.number
+                if (fl.status == 'Selected') {
+                    return fl.number
+                }
             })
             thridLineNumbers = _.map(ticketData.ticket.thridLine, fl => {
-                return fl.number
+                if (fl.status == 'Selected') {
+                    return fl.number
+                }
             })
             let drawNumber = firstLineNumbers.concat(secondLineNumbers, thridLineNumbers)
             _.remove(drawNumber, num => {
                 return num === 0
             })
-            let gameStatus = await RoomService.verifyStatus(ticketData.player, data.roomId, 'fullHousie', drawNumber)
-            if (gameStatus) {
+            if (drawNumber.length != 15) {
+                return {
+                    message: 'Please select Numbers',
+                    value: true,
+                    errorNo: 2
+                }
+            }
+            let gameDetail = await RoomService.verifyStatus(ticketData.player, data.roomId, 'fullHousie', drawNumber)
+            if (gameDetail.status) {
                 await Ticket.updateOne({
                     _id: data._id
                 }, {
@@ -180,13 +193,301 @@ module.exports = {
                 let interval = {}
                 IntervalService.clear(interval[ticketData.roomId])
                 return {
-                    message: "Claim Acceped",
+                    message: gameDetail.message,
                     value: true,
                     errorNo: 0
                 }
             } else {
                 return {
-                    message: "Claim Rejected",
+                    message: gameDetail.message,
+                    value: true,
+                    errorNo: 2
+                }
+            }
+
+        } catch (error) {
+            throw error
+        }
+    },
+    juldiFive: async function (data) {
+        let RoomService = require('../service/Room')
+        try {
+            let ticketData = await Ticket.findOne({
+                _id: data._id
+            })
+            if (!ticketData) {
+                return {
+                    message: 'Ticket Not Found',
+                    value: false
+                }
+            }
+            if (ticketData.status == 'Closed') {
+                return {
+                    message: 'Ticket Expired',
+                    value: true,
+                    errorNo: 1
+                }
+            }
+            let firstLineNumbers = []
+            let secondLineNumbers = []
+            let thridLineNumbers = []
+            firstLineNumbers = _.map(ticketData.ticket.firstLine, fl => {
+                if (fl.status == 'Selected') {
+                    return fl.number
+                }
+            })
+            secondLineNumbers = _.map(ticketData.ticket.secondLine, fl => {
+                if (fl.status == 'Selected') {
+                    return fl.number
+                }
+            })
+            thridLineNumbers = _.map(ticketData.ticket.thridLine, fl => {
+                if (fl.status == 'Selected') {
+                    return fl.number
+                }
+            })
+            let drawNumber = firstLineNumbers.concat(secondLineNumbers, thridLineNumbers)
+            _.remove(drawNumber, num => {
+                return num === 0
+            })
+            if (drawNumber.length != 5) {
+                return {
+                    message: 'Please select Numbers',
+                    value: true,
+                    errorNo: 2
+                }
+            }
+            let gameDetail = await RoomService.verifyStatus(ticketData.player, data.roomId, 'juldiFive', drawNumber)
+            if (gameDetail.status) {
+                await Ticket.updateOne({
+                    _id: data._id
+                }, {
+                    $set: {
+                        status: "Closed"
+                    },
+                    $push: {
+                        winningGames: 'juldiFive'
+                    }
+                })
+                console.log("socket called", `juldi_five_${ticketData.roomId}`)
+                io.emit(`juldi_five_${ticketData.roomId}`, {
+                    winner: ticketData.player
+                })
+                return {
+                    message: gameDetail.message,
+                    value: true,
+                    errorNo: 0
+                }
+            } else {
+                return {
+                    message: gameDetail.message,
+                    value: true,
+                    errorNo: 2
+                }
+            }
+
+        } catch (error) {
+            throw error
+        }
+    },
+    firstLine: async function (data) {
+        let RoomService = require('../service/Room')
+        try {
+            let ticketData = await Ticket.findOne({
+                _id: data._id
+            })
+            if (!ticketData) {
+                return {
+                    message: 'Ticket Not Found',
+                    value: false
+                }
+            }
+            if (ticketData.status == 'Closed') {
+                return {
+                    message: 'Ticket Expired',
+                    value: true,
+                    errorNo: 1
+                }
+            }
+            let drawNumber = []
+            drawNumber = _.map(ticketData.ticket.firstLine, fl => {
+                if (fl.status == 'Selected') {
+                    return fl.number
+                }
+            })
+
+            _.remove(drawNumber, num => {
+                return num === 0
+            })
+            if (drawNumber.length != 5) {
+                return {
+                    message: 'Please select Numbers',
+                    value: true,
+                    errorNo: 2
+                }
+            }
+            let gameDetail = await RoomService.verifyStatus(ticketData.player, data.roomId, 'firstLine', drawNumber)
+            if (gameDetail.status) {
+                await Ticket.updateOne({
+                    _id: data._id
+                }, {
+                    $set: {
+                        status: "Closed"
+                    },
+                    $push: {
+                        winningGames: 'firstLine'
+                    }
+                })
+                console.log("socket called", `first_line_${ticketData.roomId}`)
+                io.emit(`first_line_${ticketData.roomId}`, {
+                    winner: ticketData.player
+                })
+                return {
+                    message: gameDetail.message,
+                    value: true,
+                    errorNo: 0
+                }
+            } else {
+                return {
+                    message: gameDetail.message,
+                    value: true,
+                    errorNo: 2
+                }
+            }
+
+        } catch (error) {
+            throw error
+        }
+    },
+    secondLine: async function (data) {
+        let RoomService = require('../service/Room')
+        try {
+            let ticketData = await Ticket.findOne({
+                _id: data._id
+            })
+            if (!ticketData) {
+                return {
+                    message: 'Ticket Not Found',
+                    value: false
+                }
+            }
+            if (ticketData.status == 'Closed') {
+                return {
+                    message: 'Ticket Expired',
+                    value: true,
+                    errorNo: 1
+                }
+            }
+            let drawNumber = []
+            drawNumber = _.map(ticketData.ticket.secondLine, line => {
+                if (line.status == 'Selected') {
+                    return line.number
+                }
+            })
+
+            _.remove(drawNumber, num => {
+                return num === 0
+            })
+            if (drawNumber.length != 5) {
+                return {
+                    message: 'Please select Numbers',
+                    value: true,
+                    errorNo: 2
+                }
+            }
+            let gameDetail = await RoomService.verifyStatus(ticketData.player, data.roomId, 'secondLine', drawNumber)
+            if (gameDetail.status) {
+                await Ticket.updateOne({
+                    _id: data._id
+                }, {
+                    $set: {
+                        status: "Closed"
+                    },
+                    $push: {
+                        winningGames: 'secondLine'
+                    }
+                })
+                console.log("socket called", `second_line_${ticketData.roomId}`)
+                io.emit(`second_line_${ticketData.roomId}`, {
+                    winner: ticketData.player
+                })
+                return {
+                    message: gameDetail.message,
+                    value: true,
+                    errorNo: 0
+                }
+            } else {
+                return {
+                    message: gameDetail.message,
+                    value: true,
+                    errorNo: 2
+                }
+            }
+
+        } catch (error) {
+            throw error
+        }
+    },
+    thirdLine: async function (data) {
+        let RoomService = require('../service/Room')
+        try {
+            let ticketData = await Ticket.findOne({
+                _id: data._id
+            })
+            if (!ticketData) {
+                return {
+                    message: 'Ticket Not Found',
+                    value: false
+                }
+            }
+            if (ticketData.status == 'Closed') {
+                return {
+                    message: 'Ticket Expired',
+                    value: true,
+                    errorNo: 1
+                }
+            }
+            let drawNumber = []
+            drawNumber = _.map(ticketData.ticket.thirdLine, line => {
+                if (line.status == 'Selected') {
+                    return line.number
+                }
+            })
+
+            _.remove(drawNumber, num => {
+                return num === 0
+            })
+            if (drawNumber.length != 5) {
+                return {
+                    message: 'Please select Numbers',
+                    value: true,
+                    errorNo: 2
+                }
+            }
+            let gameDetail = await RoomService.verifyStatus(ticketData.player, data.roomId, 'thirdLine', drawNumber)
+            if (gameDetail.status) {
+                await Ticket.updateOne({
+                    _id: data._id
+                }, {
+                    $set: {
+                        status: "Closed"
+                    },
+                    $push: {
+                        winningGames: 'thirdLine'
+                    }
+                })
+                console.log("socket called", `third_line_${ticketData.roomId}`)
+                io.emit(`third_line_${ticketData.roomId}`, {
+                    winner: ticketData.player
+                })
+                return {
+                    message: gameDetail.message,
+                    value: true,
+                    errorNo: 0
+                }
+            } else {
+                return {
+                    message: gameDetail.message,
                     value: true,
                     errorNo: 2
                 }
