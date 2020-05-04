@@ -160,11 +160,6 @@ module.exports = {
             drawNumber.forEach(num => {
                 if (roomData.draw.indexOf(num) === -1) {
                     status = false
-                    return {
-                        status: false,
-                        message: "Claim rejected"
-                    }
-
                 }
             })
             if (type == 'fullHousie') {
@@ -209,6 +204,7 @@ module.exports = {
                         firstLine: player
                     }
                 }
+                console.log("updateObj", updateObj, status)
             }
             if (type == 'secondLine') {
                 if (roomData.secondLine.length >= 1) {
@@ -238,6 +234,7 @@ module.exports = {
                 }
             }
 
+            console.log("status::::", status)
             if (status) {
                 await Room.updateOne({
                     _id: roomId,
@@ -248,8 +245,14 @@ module.exports = {
                     status: true,
                     message: `Claim accepted for ${type}`
                 }
+            } else {
+                return {
+                    status: false,
+                    message: "Claim rejected"
+                }
             }
         } catch (error) {
+            console.log("error", error)
             throw error
         }
     }

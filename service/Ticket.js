@@ -131,6 +131,9 @@ module.exports = {
         try {
             let ticketData = await Ticket.findOne({
                 _id: data._id
+            }).populate({
+                select: '',
+                path: 'player'
             })
             if (!ticketData) {
                 return {
@@ -147,7 +150,7 @@ module.exports = {
             }
             let firstLineNumbers = []
             let secondLineNumbers = []
-            let thridLineNumbers = []
+            let thirdLineNumbers = []
             firstLineNumbers = _.map(ticketData.ticket.firstLine, fl => {
                 if (fl.status == 'Selected') {
                     return fl.number
@@ -158,14 +161,14 @@ module.exports = {
                     return fl.number
                 }
             })
-            thridLineNumbers = _.map(ticketData.ticket.thridLine, fl => {
+            thirdLineNumbers = _.map(ticketData.ticket.thirdLine, fl => {
                 if (fl.status == 'Selected') {
                     return fl.number
                 }
             })
-            let drawNumber = firstLineNumbers.concat(secondLineNumbers, thridLineNumbers)
+            let drawNumber = firstLineNumbers.concat(secondLineNumbers, thirdLineNumbers)
             _.remove(drawNumber, num => {
-                return num === 0
+                return num === 0 || !num
             })
             if (drawNumber.length != 15) {
                 return {
@@ -214,6 +217,9 @@ module.exports = {
         try {
             let ticketData = await Ticket.findOne({
                 _id: data._id
+            }).populate({
+                select: '',
+                path: 'player'
             })
             if (!ticketData) {
                 return {
@@ -230,7 +236,7 @@ module.exports = {
             }
             let firstLineNumbers = []
             let secondLineNumbers = []
-            let thridLineNumbers = []
+            let thirdLineNumbers = []
             firstLineNumbers = _.map(ticketData.ticket.firstLine, fl => {
                 if (fl.status == 'Selected') {
                     return fl.number
@@ -241,16 +247,20 @@ module.exports = {
                     return fl.number
                 }
             })
-            thridLineNumbers = _.map(ticketData.ticket.thridLine, fl => {
+            thirdLineNumbers = _.map(ticketData.ticket.thirdLine, fl => {
                 if (fl.status == 'Selected') {
                     return fl.number
                 }
             })
-            let drawNumber = firstLineNumbers.concat(secondLineNumbers, thridLineNumbers)
+            console.log(firstLineNumbers)
+            console.log(secondLineNumbers)
+            console.log(thirdLineNumbers)
+            let drawNumber = firstLineNumbers.concat(secondLineNumbers, thirdLineNumbers)
             _.remove(drawNumber, num => {
-                return num === 0
+                return num === 0 || !num
             })
-            if (drawNumber.length != 5) {
+            console.log("drawNumber.length", drawNumber, drawNumber.length)
+            if (drawNumber.length < 5) {
                 return {
                     message: 'Please select Numbers',
                     value: true,
@@ -262,9 +272,6 @@ module.exports = {
                 await Ticket.updateOne({
                     _id: data._id
                 }, {
-                    $set: {
-                        status: "Closed"
-                    },
                     $push: {
                         winningGames: 'juldiFive'
                     }
@@ -295,6 +302,9 @@ module.exports = {
         try {
             let ticketData = await Ticket.findOne({
                 _id: data._id
+            }).populate({
+                select: '',
+                path: 'player'
             })
             if (!ticketData) {
                 return {
@@ -317,9 +327,9 @@ module.exports = {
             })
 
             _.remove(drawNumber, num => {
-                return num === 0
+                return num === 0 || !num
             })
-            if (drawNumber.length != 5) {
+            if (drawNumber.length < 5) {
                 return {
                     message: 'Please select Numbers',
                     value: true,
@@ -327,13 +337,11 @@ module.exports = {
                 }
             }
             let gameDetail = await RoomService.verifyStatus(ticketData.player, data.roomId, 'firstLine', drawNumber)
+            console.log("gameDetail", gameDetail)
             if (gameDetail.status) {
                 await Ticket.updateOne({
                     _id: data._id
                 }, {
-                    $set: {
-                        status: "Closed"
-                    },
                     $push: {
                         winningGames: 'firstLine'
                     }
@@ -364,6 +372,9 @@ module.exports = {
         try {
             let ticketData = await Ticket.findOne({
                 _id: data._id
+            }).populate({
+                select: '',
+                path: 'player'
             })
             if (!ticketData) {
                 return {
@@ -386,9 +397,9 @@ module.exports = {
             })
 
             _.remove(drawNumber, num => {
-                return num === 0
+                return num === 0 || !num
             })
-            if (drawNumber.length != 5) {
+            if (drawNumber.length < 5) {
                 return {
                     message: 'Please select Numbers',
                     value: true,
@@ -400,9 +411,6 @@ module.exports = {
                 await Ticket.updateOne({
                     _id: data._id
                 }, {
-                    $set: {
-                        status: "Closed"
-                    },
                     $push: {
                         winningGames: 'secondLine'
                     }
@@ -433,6 +441,9 @@ module.exports = {
         try {
             let ticketData = await Ticket.findOne({
                 _id: data._id
+            }).populate({
+                select: '',
+                path: 'player'
             })
             if (!ticketData) {
                 return {
@@ -455,9 +466,9 @@ module.exports = {
             })
 
             _.remove(drawNumber, num => {
-                return num === 0
+                return num === 0 || !num
             })
-            if (drawNumber.length != 5) {
+            if (drawNumber.length < 5) {
                 return {
                     message: 'Please select Numbers',
                     value: true,
@@ -469,9 +480,6 @@ module.exports = {
                 await Ticket.updateOne({
                     _id: data._id
                 }, {
-                    $set: {
-                        status: "Closed"
-                    },
                     $push: {
                         winningGames: 'thirdLine'
                     }
