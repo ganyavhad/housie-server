@@ -60,7 +60,7 @@ module.exports = {
     addWinAmt: async function (player, amount) {
         try {
             return Player.updateMany({
-                _id: players
+                _id: player
             }, {
                 $inc: {
                     balance: amount

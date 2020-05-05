@@ -8,12 +8,31 @@ module.exports = {
         try {
             let roomId = parseInt(Math.random() * 100000000);
             let roomObj = {}
+            let player = await player.findOne({
+                _id: data._id
+            })
+            if (!player) {
+                return {
+                    data: "Player not found",
+                    status: false
+                }
+            }
+            if (player.balance < 100) {
+                return {
+                    data: "Insufficient Balance",
+                    status: false
+                }
+            }
             roomObj.creator = data._id;
             roomObj.roomId = roomId;
             roomObj.maxPlayer = data.maxPlayer;
             roomObj.players = [data._id];
             let room = new Room(roomObj);
-            return await room.save();
+            let savedData = await room.save();
+            return {
+                data: savedData,
+                status: true
+            }
         } catch (error) {
             throw error
         }
@@ -90,8 +109,6 @@ module.exports = {
                 roomId: data.roomId,
                 status: 'Active',
                 gameStatus: 'BeforeStart',
-                players: 1,
-                entryFee: 1
             })
             if (!roomData) {
                 return {

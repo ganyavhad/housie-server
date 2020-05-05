@@ -7,10 +7,10 @@ Router.get('/', (req, res) => {
 Router.post('/createRoom', async (req, res) => {
     try {
         let roomData = await Room.createRoom(req.body);
-        if (roomData) {
-            res.status(200).send(roomData)
+        if (roomData.status) {
+            res.status(200).send(roomData.data)
         } else {
-            res.status(404).send('Room Not Found')
+            res.status(404).send(roomData.data)
         }
     } catch (err) {
         res.status(500).send(err)
