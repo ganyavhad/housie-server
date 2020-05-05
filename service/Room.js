@@ -61,6 +61,9 @@ module.exports = {
             }, {
                 $push: {
                     players: data._id
+                },
+                $inc: {
+                    potAmount: roomData.entryFee
                 }
             })
             if (updatedData.nModified && updatedData.nModified >= 1) {
@@ -253,7 +256,8 @@ module.exports = {
                 }, updateObj)
                 return {
                     status: true,
-                    message: `Claim accepted for ${type}`
+                    message: `Claim accepted for ${type}`,
+                    potAmount: roomData.potAmount
                 }
             } else {
                 return {

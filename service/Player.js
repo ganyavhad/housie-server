@@ -56,5 +56,18 @@ module.exports = {
         } catch (error) {
             throw error
         }
+    },
+    addWinAmt: async function (player, amount) {
+        try {
+            return Player.updateMany({
+                _id: players
+            }, {
+                $inc: {
+                    balance: amount
+                }
+            })
+        } catch (error) {
+            throw error
+        }
     }
 }

@@ -37,7 +37,7 @@ const schema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Player'
   }],
-  points: Number,
+  potAmount: Number,
   maxPlayer: Number,
   status: {
     type: String,

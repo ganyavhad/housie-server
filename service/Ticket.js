@@ -1,4 +1,11 @@
+const fullHousieShare = 40,
+    juldiFiveShare = 15,
+    firstLineShare = 15,
+    secondLineShare = 15,
+    thirdLineShare = 15
+
 const Ticket = require('../model/TicketModel');
+const PlayerService = require('../service/Player')
 const _ = require('lodash');
 const IntervalService = require('../service/Interval')
 module.exports = {
@@ -189,6 +196,8 @@ module.exports = {
                         winningGames: 'fullHousie'
                     }
                 })
+                let amount = gameDetail.potAmount * fullHousieShare / 100
+                await PlayerService.addWinAmt(ticketData.player._id, amount)
                 console.log("socket called", `winner_declared_${ticketData.roomId}`)
                 io.emit(`winner_declared_${ticketData.roomId}`, {
                     winner: ticketData.player
@@ -276,6 +285,8 @@ module.exports = {
                         winningGames: 'juldiFive'
                     }
                 })
+                let amount = gameDetail.potAmount * juldiFiveShare / 100
+                await PlayerService.addWinAmt(ticketData.player._id, amount)
                 console.log("socket called", `juldi_five_${ticketData.roomId}`)
                 io.emit(`juldi_five_${ticketData.roomId}`, {
                     winner: ticketData.player
@@ -346,6 +357,8 @@ module.exports = {
                         winningGames: 'firstLine'
                     }
                 })
+                let amount = gameDetail.potAmount * firstLineShare / 100
+                await PlayerService.addWinAmt(ticketData.player._id, amount)
                 console.log("socket called", `first_line_${ticketData.roomId}`)
                 io.emit(`first_line_${ticketData.roomId}`, {
                     winner: ticketData.player
@@ -415,6 +428,8 @@ module.exports = {
                         winningGames: 'secondLine'
                     }
                 })
+                let amount = gameDetail.potAmount * secondLineShare / 100
+                await PlayerService.addWinAmt(ticketData.player._id, amount)
                 console.log("socket called", `second_line_${ticketData.roomId}`)
                 io.emit(`second_line_${ticketData.roomId}`, {
                     winner: ticketData.player
@@ -484,6 +499,8 @@ module.exports = {
                         winningGames: 'thirdLine'
                     }
                 })
+                let amount = gameDetail.potAmount * thirdLineShare / 100
+                await PlayerService.addWinAmt(ticketData.player._id, amount)
                 console.log("socket called", `third_line_${ticketData.roomId}`)
                 io.emit(`third_line_${ticketData.roomId}`, {
                     winner: ticketData.player
