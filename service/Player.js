@@ -42,4 +42,19 @@ module.exports = {
             throw error
         }
     },
+    collectCoins: async function (players, amount) {
+        try {
+            return Player.updateMany({
+                _id: {
+                    $in: players
+                }
+            }, {
+                $inc: {
+                    balance: -amount
+                }
+            })
+        } catch (error) {
+            throw error
+        }
+    }
 }

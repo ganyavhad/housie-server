@@ -54,6 +54,10 @@ const schema = new mongoose.Schema({
   },
   endTime: {
     type: Date
+  },
+  entryFee: {
+    type: Number,
+    default: 100
   }
 });
 module.exports = mongoose.model("Room", schema);

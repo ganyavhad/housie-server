@@ -1,6 +1,7 @@
 const Room = require('../model/RoomModel');
 const TicketService = require('../service/Ticket')
 const Player = require('../model/PlayerModel')
+const PlayerService = require('../service/Player')
 const IntervalService = require('../service/Interval')
 module.exports = {
     createRoom: async function (data) {
@@ -49,6 +50,12 @@ module.exports = {
                     status: false
                 }
             }
+            if (roomData.entryFee > player.balance) {
+                return {
+                    data: "Insufficient Balance",
+                    status: false
+                }
+            }
             let updatedData = await Room.updateOne({
                 _id: roomData._id
             }, {
@@ -79,7 +86,9 @@ module.exports = {
                 creator: data._id,
                 roomId: data.roomId,
                 status: 'Active',
-                gameStatus: 'BeforeStart'
+                gameStatus: 'BeforeStart',
+                players: 1,
+                entryFee: 1
             })
             if (!roomData) {
                 return {
@@ -102,6 +111,7 @@ module.exports = {
                 roomId: roomData.roomId
             })
             if (isTicketGenerated) {
+                await PlayerService.collectCoins(roomData.players, roomData.entryFee)
                 io.emit(`game_start_${roomData.roomId}`, {})
                 IntervalService.set(roomData.roomId)
                 return {
