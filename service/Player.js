@@ -53,14 +53,14 @@ module.exports = {
                     balance: -amount
                 }
             })
-            let players = await find({
+            let allPlayer = await Player.find({
                 _id: {
                     $in: players
                 }
             }, {
                 balance: 1
             })
-            players.forEach(player => {
+            allPlayer.forEach(player => {
                 io.emit(`balance_${player._id}`, {
                     balance: player.balance
                 })

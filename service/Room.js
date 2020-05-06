@@ -8,7 +8,7 @@ module.exports = {
         try {
             let roomId = parseInt(Math.random() * 100000000);
             let roomObj = {}
-            let player = await player.findOne({
+            let player = await Player.findOne({
                 _id: data._id
             })
             if (!player) {
@@ -25,8 +25,10 @@ module.exports = {
             }
             roomObj.creator = data._id;
             roomObj.roomId = roomId;
-            roomObj.maxPlayer = data.maxPlayer;
+            roomObj.maxPlayer = data.maxPlayer ? data.maxPlayer : 2;
             roomObj.players = [data._id];
+            roomObj.entryFee = data.entryFee ? data.entryFee : 100
+            roomObj.potAmount = roomObj.entryFee
             let room = new Room(roomObj);
             let savedData = await room.save();
             return {
@@ -34,6 +36,7 @@ module.exports = {
                 status: true
             }
         } catch (error) {
+            console.log(error)
             throw error
         }
     },

@@ -6,7 +6,7 @@ Router.get('/', (req, res) => {
 
 Router.get('/getPlayerDetail/:id', async (req, res, next) => {
     try {
-        let room = await Player.getPlayerDetail({
+        let player = await Player.getPlayerDetail({
             _id: req.params.id
         })
         if (player) {
