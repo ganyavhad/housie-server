@@ -202,6 +202,9 @@ module.exports = {
                 io.emit(`winner_declared_${ticketData.roomId}`, {
                     winner: ticketData.player
                 })
+                io.emit(`balance_${ticketData.player._id}`, {
+                    balance: amount + ticketData.player.balance
+                })
                 let interval = {}
                 IntervalService.clear(interval[ticketData.roomId])
                 return {
@@ -291,6 +294,9 @@ module.exports = {
                 io.emit(`juldi_five_${ticketData.roomId}`, {
                     winner: ticketData.player
                 })
+                io.emit(`balance_${ticketData.player._id}`, {
+                    balance: amount + ticketData.player.balance
+                })
                 return {
                     message: gameDetail.message,
                     value: true,
@@ -363,6 +369,9 @@ module.exports = {
                 io.emit(`first_line_${ticketData.roomId}`, {
                     winner: ticketData.player
                 })
+                io.emit(`balance_${ticketData.player._id}`, {
+                    balance: amount + ticketData.player.balance
+                })
                 return {
                     message: gameDetail.message,
                     value: true,
@@ -434,6 +443,9 @@ module.exports = {
                 io.emit(`second_line_${ticketData.roomId}`, {
                     winner: ticketData.player
                 })
+                io.emit(`balance_${ticketData.player._id}`, {
+                    balance: amount + ticketData.player.balance
+                })
                 return {
                     message: gameDetail.message,
                     value: true,
@@ -504,6 +516,9 @@ module.exports = {
                 console.log("socket called", `third_line_${ticketData.roomId}`)
                 io.emit(`third_line_${ticketData.roomId}`, {
                     winner: ticketData.player
+                })
+                io.emit(`balance_${ticketData.player._id}`, {
+                    balance: amount + ticketData.player.balance
                 })
                 return {
                     message: gameDetail.message,

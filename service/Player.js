@@ -44,7 +44,7 @@ module.exports = {
     },
     collectCoins: async function (players, amount) {
         try {
-            return Player.updateMany({
+            await Player.updateMany({
                 _id: {
                     $in: players
                 }
@@ -53,6 +53,19 @@ module.exports = {
                     balance: -amount
                 }
             })
+            let players = await find({
+                _id: {
+                    $in: players
+                }
+            }, {
+                balance: 1
+            })
+            players.forEach(player => {
+                io.emit(`balance_${player._id}`, {
+                    balance: player.balance
+                })
+            })
+            return
         } catch (error) {
             throw error
         }
@@ -65,6 +78,15 @@ module.exports = {
                 $inc: {
                     balance: amount
                 }
+            })
+        } catch (error) {
+            throw error
+        }
+    },
+    getPlayerDetail: async function (data) {
+        try {
+            return await Player.findOne({
+                _id: data._id
             })
         } catch (error) {
             throw error
