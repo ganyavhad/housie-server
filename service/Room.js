@@ -192,8 +192,8 @@ module.exports = {
             }, {
                 draw: 0
             }).populate({
-                select: '_id name balance',
-                path: 'players'
+                select: '_id name balance profilePic',
+                path: 'players creator'
             })
             roomData = roomData.toObject()
             roomData.totalPlayers = roomData.players.length
@@ -201,7 +201,7 @@ module.exports = {
             _.each(roomData.players, function (player) {
                 player.winAmt = 0;
                 let ticketDetail = _.find(tickets, function (ticket) {
-                    return ticket.roomId == roomData.roomId
+                    return ticket.player.toString() == player._id.toString()
                 })
                 player.ticket = ticketDetail ? ticketDetail.ticket : {}
                 let winningGames = ticketDetail.winningGames
@@ -217,6 +217,10 @@ module.exports = {
                     })
                 }
             })
+            _.sortBy(roomData.players, [function (o) {
+                return o.winAmt;
+            }]);
+            _.reverse(roomData.players)
             return roomData
         } catch (error) {
             console.log("error", error)
