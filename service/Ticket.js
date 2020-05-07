@@ -182,11 +182,15 @@ module.exports = {
                 await Ticket.updateOne({
                     _id: data._id
                 }, {
-                    $set: {
-                        status: "Closed"
-                    },
                     $push: {
                         winningGames: 'fullHousie'
+                    }
+                })
+                await Ticket.updateMany({
+                    roomId: ticketData.roomId
+                }, {
+                    $set: {
+                        status: "Closed"
                     }
                 })
                 let amount = gameDetail.winAmt
@@ -521,6 +525,17 @@ module.exports = {
                 }
             }
 
+        } catch (error) {
+            throw error
+        }
+    },
+    getTicketsForRoom: async function (data) {
+        try {
+            let tickets = Ticket.find({
+                roomId: data.roomId,
+                status: 'Closed'
+            })
+            return tickets
         } catch (error) {
             throw error
         }

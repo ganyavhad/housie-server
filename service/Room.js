@@ -3,6 +3,7 @@ const TicketService = require('../service/Ticket')
 const Player = require('../model/PlayerModel')
 const PlayerService = require('../service/Player')
 const IntervalService = require('../service/Interval')
+const _ = require('lodash');
 
 const fullHousieShare = 40,
     juldiFiveShare = 15,
@@ -174,10 +175,51 @@ module.exports = {
                 roomId: data.roomId,
                 status: 'Active',
                 gameStatus: "Start"
-            }, {
-                players: 0
+            }).populate({
+                select: '_id name balance',
+                path: 'players'
             })
         } catch (error) {
+            throw error
+        }
+    },
+    getRoomForWinner: async function (data) {
+        try {
+            let roomData = await Room.findOne({
+                roomId: data.roomId,
+                status: "Closed",
+                gameStatus: "ResultDeclared"
+            }, {
+                draw: 0
+            }).populate({
+                select: '_id name balance',
+                path: 'players'
+            })
+            roomData = roomData.toObject()
+            roomData.totalPlayers = roomData.players.length
+            let tickets = await TicketService.getTicketsForRoom(data)
+            _.each(roomData.players, function (player) {
+                player.winAmt = 0;
+                let ticketDetail = _.find(tickets, function (ticket) {
+                    return ticket.roomId == roomData.roomId
+                })
+                player.ticket = ticketDetail ? ticketDetail.ticket : {}
+                let winningGames = ticketDetail.winningGames
+                player.winningGames = []
+                if (!_.isEmpty(winningGames)) {
+                    winningGames.forEach(game => {
+                        let amt = roomData[game][0].winAmt
+                        player.winAmt = player.winAmt + amt
+                        player.winningGames.push({
+                            name: _.capitalize(game),
+                            amount: amt
+                        })
+                    })
+                }
+            })
+            return roomData
+        } catch (error) {
+            console.log("error", error)
             throw error
         }
     },
