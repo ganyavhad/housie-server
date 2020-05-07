@@ -96,7 +96,13 @@ module.exports = {
                 }
             })
             if (updatedData.nModified && updatedData.nModified >= 1) {
-                roomData.players.push(data._id)
+                roomData = await Room.findOne({
+                    roomId: data.roomId,
+                    status: 'Active'
+                }).populate({
+                    select: "_id name",
+                    path: 'players'
+                })
                 io.emit(`table_join_${roomData.roomId}`, player)
                 return {
                     data: roomData,
