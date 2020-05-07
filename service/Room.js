@@ -3,6 +3,13 @@ const TicketService = require('../service/Ticket')
 const Player = require('../model/PlayerModel')
 const PlayerService = require('../service/Player')
 const IntervalService = require('../service/Interval')
+
+const fullHousieShare = 40,
+    juldiFiveShare = 15,
+    firstLineShare = 15,
+    secondLineShare = 15,
+    thirdLineShare = 15
+
 module.exports = {
     createRoom: async function (data) {
         try {
@@ -48,7 +55,6 @@ module.exports = {
                 name: 1,
                 balance: 1
             })
-            console.log(player)
             let roomData = await Room.findOne({
                 roomId: data.roomId,
                 status: 'Active'
@@ -195,7 +201,9 @@ module.exports = {
                     status = false
                 }
             })
+            let winAmt = 0
             if (type == 'fullHousie') {
+                winAmt = roomData.potAmount * fullHousieShare / 100
                 if (roomData.fullHousie.length >= 1) {
                     return {
                         status: false,
@@ -208,11 +216,15 @@ module.exports = {
                         status: "Closed",
                     },
                     $push: {
-                        fullHousie: player
+                        fullHousie: {
+                            player: player,
+                            winAmt: winAmt
+                        }
                     }
                 }
             }
             if (type == 'juldiFive') {
+                winAmt = roomData.potAmount * juldiFiveShare / 100
                 if (roomData.juldiFive.length >= 1) {
                     return {
                         status: false,
@@ -221,11 +233,15 @@ module.exports = {
                 }
                 updateObj = {
                     $push: {
-                        juldiFive: player
+                        juldiFive: {
+                            player: player,
+                            winAmt: winAmt
+                        }
                     }
                 }
             }
             if (type == 'firstLine') {
+                winAmt = roomData.potAmount * firstLineShare / 100
                 if (roomData.firstLine.length >= 1) {
                     return {
                         status: false,
@@ -234,12 +250,15 @@ module.exports = {
                 }
                 updateObj = {
                     $push: {
-                        firstLine: player
+                        firstLine: {
+                            player: player,
+                            winAmt: winAmt
+                        }
                     }
                 }
-                console.log("updateObj", updateObj, status)
             }
             if (type == 'secondLine') {
+                winAmt = roomData.potAmount * secondLineShare / 100
                 if (roomData.secondLine.length >= 1) {
                     return {
                         status: false,
@@ -248,12 +267,17 @@ module.exports = {
                 }
                 updateObj = {
                     $push: {
-                        secondLine: player
+                        secondLine: {
+                            winAmt: winAmt,
+                            player: player
+                        }
                     }
                 }
             }
 
             if (type == 'thirdLine') {
+                winAmt = roomData.potAmount * thirdLineShare / 100
+
                 if (roomData.thirdLine.length >= 1) {
                     return {
                         status: false,
@@ -262,12 +286,14 @@ module.exports = {
                 }
                 updateObj = {
                     $push: {
-                        thirdLine: player
+                        thirdLine: {
+                            player: player,
+                            winAmt: winAmt
+                        }
                     }
                 }
             }
 
-            console.log("status::::", status)
             if (status) {
                 await Room.updateOne({
                     _id: roomId,
@@ -277,7 +303,7 @@ module.exports = {
                 return {
                     status: true,
                     message: `Claim accepted for ${type}`,
-                    potAmount: roomData.potAmount
+                    winAmt: winAmt
                 }
             } else {
                 return {

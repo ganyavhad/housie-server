@@ -18,10 +18,8 @@ module.exports = {
                         roomId: id,
                         number: num
                     })
-                    console.log(updatedRoom)
                     if (updatedRoom && updatedRoom.nModified >= 1) {
                         io.emit(`draw_${id}`, num);
-                        console.log(num, drawNumbers[id].length)
                     } else {
                         this.clear(interval[id])
                     }

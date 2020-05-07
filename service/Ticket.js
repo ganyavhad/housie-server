@@ -1,9 +1,3 @@
-const fullHousieShare = 40,
-    juldiFiveShare = 15,
-    firstLineShare = 15,
-    secondLineShare = 15,
-    thirdLineShare = 15
-
 const Ticket = require('../model/TicketModel');
 const PlayerService = require('../service/Player')
 const _ = require('lodash');
@@ -117,7 +111,6 @@ module.exports = {
             let updatedData = await Ticket.updateOne(filterObj, {
                 $set: updateObj
             })
-            console.log(updatedData)
             if (updatedData.nModified >= 1) {
                 return {
                     message: "Number Selected",
@@ -184,7 +177,7 @@ module.exports = {
                     errorNo: 2
                 }
             }
-            let gameDetail = await RoomService.verifyStatus(ticketData.player, data.roomId, 'fullHousie', drawNumber)
+            let gameDetail = await RoomService.verifyStatus(ticketData.player._id, data.roomId, 'fullHousie', drawNumber)
             if (gameDetail.status) {
                 await Ticket.updateOne({
                     _id: data._id
@@ -196,7 +189,7 @@ module.exports = {
                         winningGames: 'fullHousie'
                     }
                 })
-                let amount = gameDetail.potAmount * fullHousieShare / 100
+                let amount = gameDetail.winAmt
                 await PlayerService.addWinAmt(ticketData.player._id, amount)
                 console.log("socket called", `winner_declared_${ticketData.roomId}`)
                 io.emit(`winner_declared_${ticketData.roomId}`, {
@@ -264,14 +257,10 @@ module.exports = {
                     return fl.number
                 }
             })
-            console.log(firstLineNumbers)
-            console.log(secondLineNumbers)
-            console.log(thirdLineNumbers)
             let drawNumber = firstLineNumbers.concat(secondLineNumbers, thirdLineNumbers)
             _.remove(drawNumber, num => {
                 return num === 0 || !num
             })
-            console.log("drawNumber.length", drawNumber, drawNumber.length)
             if (drawNumber.length < 5) {
                 return {
                     message: 'Please select Numbers',
@@ -279,7 +268,7 @@ module.exports = {
                     errorNo: 2
                 }
             }
-            let gameDetail = await RoomService.verifyStatus(ticketData.player, data.roomId, 'juldiFive', drawNumber)
+            let gameDetail = await RoomService.verifyStatus(ticketData.player._id, data.roomId, 'juldiFive', drawNumber)
             if (gameDetail.status) {
                 await Ticket.updateOne({
                     _id: data._id
@@ -288,7 +277,7 @@ module.exports = {
                         winningGames: 'juldiFive'
                     }
                 })
-                let amount = gameDetail.potAmount * juldiFiveShare / 100
+                let amount = gameDetail.winAmt
                 await PlayerService.addWinAmt(ticketData.player._id, amount)
                 console.log("socket called", `juldi_five_${ticketData.roomId}`)
                 io.emit(`juldi_five_${ticketData.roomId}`, {
@@ -353,8 +342,7 @@ module.exports = {
                     errorNo: 2
                 }
             }
-            let gameDetail = await RoomService.verifyStatus(ticketData.player, data.roomId, 'firstLine', drawNumber)
-            console.log("gameDetail", gameDetail)
+            let gameDetail = await RoomService.verifyStatus(ticketData.player._id, data.roomId, 'firstLine', drawNumber)
             if (gameDetail.status) {
                 await Ticket.updateOne({
                     _id: data._id
@@ -363,7 +351,7 @@ module.exports = {
                         winningGames: 'firstLine'
                     }
                 })
-                let amount = gameDetail.potAmount * firstLineShare / 100
+                let amount = gameDetail.winAmt
                 await PlayerService.addWinAmt(ticketData.player._id, amount)
                 console.log("socket called", `first_line_${ticketData.roomId}`)
                 io.emit(`first_line_${ticketData.roomId}`, {
@@ -428,7 +416,7 @@ module.exports = {
                     errorNo: 2
                 }
             }
-            let gameDetail = await RoomService.verifyStatus(ticketData.player, data.roomId, 'secondLine', drawNumber)
+            let gameDetail = await RoomService.verifyStatus(ticketData.player._id, data.roomId, 'secondLine', drawNumber)
             if (gameDetail.status) {
                 await Ticket.updateOne({
                     _id: data._id
@@ -437,7 +425,7 @@ module.exports = {
                         winningGames: 'secondLine'
                     }
                 })
-                let amount = gameDetail.potAmount * secondLineShare / 100
+                let amount = gameDetail.winAmt
                 await PlayerService.addWinAmt(ticketData.player._id, amount)
                 console.log("socket called", `second_line_${ticketData.roomId}`)
                 io.emit(`second_line_${ticketData.roomId}`, {
@@ -502,7 +490,7 @@ module.exports = {
                     errorNo: 2
                 }
             }
-            let gameDetail = await RoomService.verifyStatus(ticketData.player, data.roomId, 'thirdLine', drawNumber)
+            let gameDetail = await RoomService.verifyStatus(ticketData.player._id, data.roomId, 'thirdLine', drawNumber)
             if (gameDetail.status) {
                 await Ticket.updateOne({
                     _id: data._id
@@ -511,7 +499,7 @@ module.exports = {
                         winningGames: 'thirdLine'
                     }
                 })
-                let amount = gameDetail.potAmount * thirdLineShare / 100
+                let amount = gameDetail.winAmt
                 await PlayerService.addWinAmt(ticketData.player._id, amount)
                 console.log("socket called", `third_line_${ticketData.roomId}`)
                 io.emit(`third_line_${ticketData.roomId}`, {

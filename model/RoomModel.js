@@ -18,24 +18,49 @@ const schema = new mongoose.Schema({
     type: Number
   }],
   juldiFive: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Player'
+    player: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Player'
+    },
+    winAmt: {
+      type: Number
+    }
   }],
   firstLine: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Player'
+    player: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Player'
+    },
+    winAmt: {
+      type: Number
+    }
   }],
   secondLine: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Player'
+    player: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Player'
+    },
+    winAmt: {
+      type: Number
+    }
   }],
   thirdLine: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Player'
+    player: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Player'
+    },
+    winAmt: {
+      type: Number
+    }
   }],
   fullHousie: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Player'
+    player: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Player'
+    },
+    winAmt: {
+      type: Number
+    }
   }],
   potAmount: Number,
   maxPlayer: Number,
