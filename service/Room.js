@@ -59,6 +59,9 @@ module.exports = {
             let roomData = await Room.findOne({
                 roomId: data.roomId,
                 status: 'Active'
+            }).populate({
+                select: "_id name",
+                path: 'players'
             })
             if (!roomData) {
                 return {
