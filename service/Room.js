@@ -99,13 +99,6 @@ module.exports = {
                 }
             })
             if (updatedData.nModified && updatedData.nModified >= 1) {
-                roomData = await Room.findOne({
-                    roomId: data.roomId,
-                    status: 'Active'
-                }).populate({
-                    select: "_id name",
-                    path: 'players'
-                })
                 io.emit(`table_join_${roomData.roomId}`, player)
                 return {
                     data: roomData,
@@ -185,9 +178,24 @@ module.exports = {
                 status: 'Active',
                 gameStatus: "Start"
             }).populate({
-                select: '_id name balance',
+                select: '_id name balance profilePic',
                 path: 'players'
             })
+        } catch (error) {
+            throw error
+        }
+    },
+    getRoomBeforeStart: async function (data) {
+        try {
+            room = await Room.findOne({
+                roomId: data.roomId,
+                status: 'Active',
+                gameStatus: "BeforeStart"
+            }).populate({
+                select: '_id name balance profilePic',
+                path: 'players creator'
+            })
+            return room.toObject()
         } catch (error) {
             throw error
         }

@@ -62,6 +62,22 @@ Router.get('/getRoom/:id', async (req, res, next) => {
         res.status(500).send(error)
     }
 })
+Router.get('/getRoomBeforeStart/:id', async (req, res, next) => {
+    try {
+        let room = await Room.getRoomBeforeStart({
+            roomId: req.params.id
+        })
+        if (room) {
+            res.status(200).send(room)
+        } else {
+            res.status(404).send({
+                message: "Room not found"
+            })
+        }
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
 Router.get('/getRoomForWinner/:id', async (req, res, next) => {
     try {
         let room = await Room.getRoomForWinner({
