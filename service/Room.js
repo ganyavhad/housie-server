@@ -69,7 +69,9 @@ module.exports = {
                     status: false
                 }
             }
-            let playerIndex = roomData.players.indexOf(data._id);
+            let playerIndex = roomData.players.findIndex(player => {
+                return player._id.toString() == data._id.toString()
+            });
             if (playerIndex !== -1) {
                 return {
                     data: roomData,
@@ -189,8 +191,7 @@ module.exports = {
         try {
             room = await Room.findOne({
                 roomId: data.roomId,
-                status: 'Active',
-                gameStatus: "BeforeStart"
+                status: 'Active'
             }).populate({
                 select: '_id name balance profilePic',
                 path: 'players creator'
